@@ -49,9 +49,7 @@ func LoadPNG(filename string) *PNGFile {
 		chunk := ReadChunk(file)
 		img.Chunks = append(img.Chunks, chunk)
 		chunkType = chunk.Type
-		// fmt.Printf("Type: %v Length: %v\n", chunkType, chunk.Length)
 	}
-	// fmt.Printf("%v\n", img)
 
 	err = file.Close()
 	if err != nil {

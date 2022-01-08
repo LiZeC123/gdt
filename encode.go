@@ -6,13 +6,11 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"encoding/base64"
-	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
 )
-
 
 func Encode(input string, key string, output string) {
 	file, err := os.Open(input)
@@ -25,11 +23,7 @@ func Encode(input string, key string, output string) {
 		panic(err)
 	}
 
-	k := []byte(key)
-	if len(k) < 32 {
-		panic(errors.New("key needs at least 32 bytes"))
-	}
-	k = k[:32]
+	k := genKeyFromString(key)
 
 	encryptCode := aesEncrypt(content, k)
 
@@ -55,11 +49,7 @@ func Decode(input string, key string, output string) {
 		panic(err)
 	}
 
-	k := []byte(key)
-	if len(k) < 32 {
-		panic(errors.New("key needs at least 32 bytes"))
-	}
-	k = k[:32]
+	k := genKeyFromString(key)
 
 	decryptCode := aesDecrypt(content, k)
 
@@ -74,11 +64,16 @@ func Decode(input string, key string, output string) {
 	_, _ = fmt.Fprintln(out, decryptCode)
 }
 
-func aesEncrypt(origData []byte, k []byte) string {
-	// 转成字节数组
-	// origData := []byte(orig)
-	// k := []byte(key)
+func genKeyFromString(key string) []byte {
+	k := []byte(key)
+	if len(k) < 32 {
+		r := 32 / len(k)
+		k = bytes.Repeat(k, r+1)
+	}
+	return k[:32]
+}
 
+func aesEncrypt(origData []byte, k []byte) string {
 	// 分组秘钥
 	block, _ := aes.NewCipher(k)
 	// 获取秘钥块的长度
