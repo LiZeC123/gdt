@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
 )
 
 var (
@@ -49,6 +50,7 @@ func main() {
 		tmp := msg + ".tmp"
 		Encode(msg, key, tmp)
 		Embed(input, tmp, input)
+		_ = os.Remove(tmp)
 		return
 	}
 
@@ -56,6 +58,10 @@ func main() {
 		tmp := msg + ".tmp"
 		Extract(input, tmp, input)
 		Decode(tmp, key, msg)
+		err := os.Remove(tmp)
+		if err != nil {
+			panic(err)
+		}
 		return
 	}
 

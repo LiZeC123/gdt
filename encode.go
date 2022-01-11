@@ -17,6 +17,7 @@ func Encode(input string, key string, output string) {
 	if err != nil {
 		panic(err)
 	}
+	defer file.Close()
 
 	content, err := ioutil.ReadAll(file)
 	if err != nil {
@@ -33,6 +34,7 @@ func Encode(input string, key string, output string) {
 		if err != nil {
 			panic(err)
 		}
+		defer out.Close()
 	}
 	_, _ = fmt.Fprintln(out, encryptCode)
 }
@@ -42,6 +44,7 @@ func Decode(input string, key string, output string) {
 	if err != nil {
 		panic(err)
 	}
+	defer file.Close()
 
 	buf := bufio.NewReader(file)
 	content, err := buf.ReadString('\n')
@@ -59,6 +62,7 @@ func Decode(input string, key string, output string) {
 		if err != nil {
 			panic(err)
 		}
+		defer out.Close()
 	}
 
 	_, _ = fmt.Fprintln(out, decryptCode)

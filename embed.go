@@ -111,6 +111,7 @@ func (img *PNGFile) Save(outFile string, ignore [4]byte) {
 	if err != nil {
 		panic(err)
 	}
+	defer file.Close()
 
 	err = binary.Write(file, binary.BigEndian, img.Header)
 	if err != nil {
