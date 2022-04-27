@@ -71,13 +71,8 @@ func ReadChunk(r io.Reader) *Chunk {
 	return chunk
 }
 
-func (img *PNGFile) Embed(msgFile string) {
-	file, err := os.Open(msgFile)
-	if err != nil {
-		panic(err)
-	}
-
-	msg, err := ioutil.ReadAll(file)
+func (img *PNGFile) Embed() {
+	msg, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {
 		panic(err)
 	}
@@ -89,16 +84,11 @@ func (img *PNGFile) Embed(msgFile string) {
 	img.Chunks = append(img.Chunks, &chunk, EOFChunk)
 }
 
-func (img *PNGFile) Extract(msgFile string) {
-	file, err := os.Create(msgFile)
-	if err != nil {
-		panic(err)
-	}
-
+func (img *PNGFile) Extract() {
 	for _, chunk := range img.Chunks {
 		chunkType := string(chunk.Type[:])
 		if chunkType == "rMSt" {
-			_, err := file.Write(chunk.Data)
+			_, err := os.Stdout.Write(chunk.Data)
 			if err != nil {
 				panic(err)
 			}
@@ -139,19 +129,23 @@ func (img *PNGFile) Show() {
 	}
 }
 
-func Embed(pngFile string, msgFile string, outFile string) {
+func Embed(pngFile string) {
 	img := LoadPNG(pngFile)
-	img.Embed(msgFile)
-	img.Save(outFile, [4]byte{})
+	img.Embed()
+	img.Save(pngFile, [4]byte{})
 }
 
-func Extract(pngFile string, msgFile string, outFile string) {
+func Extract(pngFile string) {
 	img := LoadPNG(pngFile)
-	img.Extract(msgFile)
-	img.Save(outFile, IMSG)
+	img.Extract()
 }
 
 func Show(pngFile string) {
 	img := LoadPNG(pngFile)
 	img.Show()
+}
+
+func Clear(pngFile string) {
+	img := LoadPNG(pngFile)
+	img.Save(pngFile, IMSG)
 }

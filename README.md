@@ -6,13 +6,14 @@ GDT实现了对数据的AES加密和解密功能, 并提供了将数据嵌入到
 
 ### 基础指令
 
-- 加密数据: gdt -e -i input.txt -o output.txt -k "password"
-- 解密数据: gdt -d -i input.txt -o output.txt -k "password"
-- 嵌入数据: gdt -m -i base.png -g msg.txt
-- 提取数据: gdt -x -i base.png -g msg.txt
+- 加密数据: gdt -e -k "password" < input.txt > output.txt
+- 解密数据: gdt -d -k "password" < input.txt > output.txt
+- 嵌入数据: gdt -m -i base.png < msg.txt
+- 提取数据: gdt -x -i base.png > msg.txt
 - 查看图片: gdt -s -i base.png
+- 清除数据: gdt -c -i base.png
 
 ### 组合指令
 
-- 加密并嵌入数据: gdt -e -m -i base.png -g msg.txt -k "password"
-- 提取并解密数据: gdt -x -d -i base.png -g msg.txt -k "password"
+- 加密并嵌入数据: gdt -e -k "password" < input.txt | gdt -m -i base.png
+- 提取并解密数据: gdt -x -i base.png | gdt -d -k "password" > output.txt

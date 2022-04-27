@@ -12,14 +12,8 @@ import (
 	"os"
 )
 
-func Encode(input string, key string, output string) {
-	file, err := os.Open(input)
-	if err != nil {
-		panic(err)
-	}
-	defer file.Close()
-
-	content, err := ioutil.ReadAll(file)
+func Encode(key string) {
+	content, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {
 		panic(err)
 	}
@@ -28,25 +22,11 @@ func Encode(input string, key string, output string) {
 
 	encryptCode := aesEncrypt(content, k)
 
-	out := os.Stdout
-	if output != "" {
-		out, err = os.Create(output)
-		if err != nil {
-			panic(err)
-		}
-		defer out.Close()
-	}
-	_, _ = fmt.Fprintln(out, encryptCode)
+	_, _ = fmt.Fprintln(os.Stdout, encryptCode)
 }
 
-func Decode(input string, key string, output string) {
-	file, err := os.Open(input)
-	if err != nil {
-		panic(err)
-	}
-	defer file.Close()
-
-	buf := bufio.NewReader(file)
+func Decode(key string) {
+	buf := bufio.NewReader(os.Stdin)
 	content, err := buf.ReadString('\n')
 	if err != nil && err != io.EOF {
 		panic(err)
@@ -56,16 +36,7 @@ func Decode(input string, key string, output string) {
 
 	decryptCode := aesDecrypt(content, k)
 
-	out := os.Stdout
-	if output != "" {
-		out, err = os.Create(output)
-		if err != nil {
-			panic(err)
-		}
-		defer out.Close()
-	}
-
-	_, _ = fmt.Fprintln(out, decryptCode)
+	_, _ = fmt.Fprintln(os.Stdout, decryptCode)
 }
 
 func genKeyFromString(key string) []byte {
